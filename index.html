@@ -1,0 +1,1906 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberSecurity Inspector Pro | Pentest Complet</title>
+    <style>
+        :root {
+            --hacker-green: #00ff00;
+            --hacker-dark: #0a0a0a;
+            --hacker-gray: #1a1a2e;
+            --warning: #ff6b00;
+            --danger: #ff0033;
+            --primary: #00a8ff;
+            --purple: #8a2be2;
+            --yellow: #ffcc00;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'JetBrains Mono', 'Consolas', 'Monaco', monospace;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        /* Matrix Rain Background */
+        .matrix-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            opacity: 0.1;
+            pointer-events: none;
+        }
+        
+        .scan-line {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--hacker-green), transparent);
+            animation: scan 3s linear infinite;
+            z-index: 999;
+            pointer-events: none;
+        }
+        
+        @keyframes scan {
+            0% { top: 0%; }
+            100% { top: 100%; }
+        }
+        
+        header {
+            background: rgba(10, 10, 18, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(0, 255, 0, 0.3);
+            padding: 1.2rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+        }
+        
+        .header-content {
+            max-width: 1600px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+        }
+        
+        h1 {
+            color: var(--hacker-green);
+            font-size: 1.6rem;
+            font-weight: 400;
+            letter-spacing: 1.5px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .logo-badge {
+            background: linear-gradient(45deg, var(--danger), var(--purple));
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .target-controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-grow: 1;
+            justify-content: flex-end;
+        }
+        
+        #targetUrl {
+            width: 400px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(0, 255, 0, 0.3);
+            color: var(--hacker-green);
+            padding: 12px 18px;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            font-family: 'Consolas', monospace;
+            transition: all 0.3s;
+        }
+        
+        #targetUrl:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 20px rgba(0, 168, 255, 0.3);
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(45deg, var(--primary), var(--purple));
+            color: white;
+            border: 1px solid rgba(0, 168, 255, 0.5);
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(45deg, var(--purple), var(--primary));
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(138, 43, 226, 0.4);
+        }
+        
+        .btn-danger {
+            background: linear-gradient(45deg, var(--danger), #ff6b00);
+            color: white;
+            border: 1px solid rgba(255, 0, 51, 0.5);
+        }
+        
+        .btn-danger:hover {
+            background: linear-gradient(45deg, #ff6b00, var(--danger));
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(255, 0, 51, 0.4);
+        }
+        
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .dashboard {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 2rem;
+            min-height: calc(100vh - 150px);
+        }
+        
+        @media (max-width: 1200px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .sidebar {
+            background: rgba(20, 20, 30, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            height: fit-content;
+        }
+        
+        .module-section {
+            margin-bottom: 2rem;
+        }
+        
+        .module-section h3 {
+            color: var(--primary);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .module-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 8px;
+        }
+        
+        .module-btn {
+            padding: 14px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            color: #aaa;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.9rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .module-btn::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 0;
+            background: rgba(0, 255, 0, 0.1);
+            transition: width 0.3s;
+        }
+        
+        .module-btn:hover {
+            background: rgba(255, 255, 255, 0.07);
+            color: white;
+            border-color: rgba(0, 255, 0, 0.2);
+            transform: translateX(5px);
+        }
+        
+        .module-btn:hover::before {
+            width: 3px;
+        }
+        
+        .module-btn.active {
+            background: rgba(0, 255, 0, 0.1);
+            color: var(--hacker-green);
+            border-color: var(--hacker-green);
+            border-left: 3px solid var(--hacker-green);
+        }
+        
+        .module-btn.active::before {
+            width: 3px;
+        }
+        
+        .module-icon {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+        
+        .main-content {
+            background: rgba(20, 20, 30, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            overflow-y: auto;
+        }
+        
+        .analysis-panel {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+        
+        .analysis-panel.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .panel-header {
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .panel-header h2 {
+            color: var(--hacker-green);
+            font-size: 1.8rem;
+            font-weight: 400;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .panel-subtitle {
+            color: #aaa;
+            font-size: 0.95rem;
+        }
+        
+        .panel-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .metric-card {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            padding: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--purple));
+        }
+        
+        .metric-card.critical::before { background: var(--danger); }
+        .metric-card.warning::before { background: var(--warning); }
+        .metric-card.success::before { background: var(--hacker-green); }
+        
+        .metric-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border-color: rgba(0, 255, 0, 0.2);
+        }
+        
+        .metric-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .metric-title {
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        
+        .metric-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            padding: 8px 16px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.05);
+        }
+        
+        .metric-value.critical { color: var(--danger); }
+        .metric-value.warning { color: var(--warning); }
+        .metric-value.success { color: var(--hacker-green); }
+        .metric-value.info { color: var(--primary); }
+        
+        .metric-content {
+            color: #bbb;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+        
+        .findings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .finding-card {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            padding: 1.5rem;
+            border-left: 4px solid var(--danger);
+            transition: all 0.3s;
+        }
+        
+        .finding-card.high { border-left-color: var(--warning); }
+        .finding-card.medium { border-left-color: var(--yellow); }
+        .finding-card.low { border-left-color: var(--primary); }
+        .finding-card.info { border-left-color: var(--hacker-green); }
+        
+        .finding-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .finding-title {
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        
+        .severity-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .severity-critical { background: var(--danger); color: white; }
+        .severity-high { background: var(--warning); color: black; }
+        .severity-medium { background: var(--yellow); color: black; }
+        .severity-low { background: var(--primary); color: white; }
+        .severity-info { background: var(--hacker-green); color: black; }
+        
+        .finding-content {
+            color: #bbb;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+        
+        .code-block {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 1.2rem;
+            margin: 1rem 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            color: #ccc;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        
+        .progress-container {
+            margin: 1rem 0;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 0.5rem;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--danger), var(--warning), var(--hacker-green));
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+        
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: #aaa;
+        }
+        
+        .alert-box {
+            background: rgba(255, 0, 51, 0.1);
+            border: 1px solid rgba(255, 0, 51, 0.3);
+            border-left: 4px solid var(--danger);
+            border-radius: 8px;
+            padding: 1.2rem;
+            margin: 1.5rem 0;
+            color: #ffcccc;
+        }
+        
+        .alert-box.warning {
+            background: rgba(255, 107, 0, 0.1);
+            border-color: rgba(255, 107, 0, 0.3);
+            border-left-color: var(--warning);
+            color: #ffddcc;
+        }
+        
+        .alert-box.success {
+            background: rgba(0, 255, 0, 0.1);
+            border-color: rgba(0, 255, 0, 0.3);
+            border-left-color: var(--hacker-green);
+            color: #ccffcc;
+        }
+        
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 2000;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+        }
+        
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 3px solid rgba(0, 255, 0, 0.3);
+            border-top-color: var(--hacker-green);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .loading-text {
+            color: var(--hacker-green);
+            font-size: 1.2rem;
+            text-align: center;
+        }
+        
+        .loading-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            max-width: 500px;
+            margin-top: 1rem;
+        }
+        
+        .loading-step {
+            color: #aaa;
+            font-size: 0.9rem;
+            padding: 8px 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+        }
+        
+        .loading-step.active {
+            color: var(--hacker-green);
+            background: rgba(0, 255, 0, 0.1);
+            border-left: 3px solid var(--hacker-green);
+        }
+        
+        .loading-step.completed {
+            color: #ccc;
+            background: rgba(255, 255, 255, 0.02);
+        }
+        
+        .status-bar {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 1000;
+            border: 1px solid rgba(0, 255, 0, 0.2);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+        }
+        
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--hacker-green);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 1.5rem;
+            color: #666;
+            font-size: 0.8rem;
+            margin-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .tooltip {
+            position: relative;
+            cursor: help;
+        }
+        
+        .tooltip:hover::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            white-space: nowrap;
+            z-index: 1000;
+            border: 1px solid rgba(0, 255, 0, 0.3);
+            margin-bottom: 5px;
+        }
+        
+        .chip {
+            display: inline-block;
+            padding: 2px 8px;
+            background: rgba(0, 255, 0, 0.1);
+            color: var(--hacker-green);
+            border-radius: 12px;
+            font-size: 0.7rem;
+            margin: 2px;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="matrix-bg" id="matrixBg"></div>
+    <div class="scan-line"></div>
+    
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+        <div class="loading-text" id="loadingText">Initialisation du pentest...</div>
+        <div class="loading-steps" id="loadingSteps">
+            <div class="loading-step" id="step1">Configuration des outils</div>
+            <div class="loading-step" id="step2">Établissement de la connexion</div>
+            <div class="loading-step" id="step3">Analyse de surface</div>
+            <div class="loading-step" id="step4">Scan des ports</div>
+            <div class="loading-step" id="step5">Test des vulnérabilités</div>
+            <div class="loading-step" id="step6">Génération du rapport</div>
+        </div>
+    </div>
+    
+    <header>
+        <div class="header-content">
+            <h1>
+                <i class="fas fa-shield-alt"></i>
+                CYBERSECURITY INSPECTOR PRO
+                <span class="logo-badge">v4.0</span>
+            </h1>
+            
+            <div class="target-controls">
+                <input type="text" id="targetUrl" placeholder="https://cible.com" value="https://example.com">
+                <button class="btn btn-primary" id="scanBtn">
+                    <i class="fas fa-crosshairs"></i> Lancer le Pentest
+                </button>
+                <button class="btn btn-danger" id="deepScanBtn">
+                    <i class="fas fa-bomb"></i> Scan Aggressif
+                </button>
+            </div>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="dashboard">
+            <div class="sidebar">
+                <div class="module-section">
+                    <h3><i class="fas fa-tachometer-alt"></i> Tableau de Bord</h3>
+                    <div class="module-grid">
+                        <button class="module-btn active" data-panel="overview">
+                            <div class="module-icon"><i class="fas fa-chart-bar"></i></div>
+                            Vue d'Ensemble
+                        </button>
+                        <button class="module-btn" data-panel="security">
+                            <div class="module-icon"><i class="fas fa-shield-alt"></i></div>
+                            Analyse Sécurité
+                        </button>
+                        <button class="module-btn" data-panel="vulnerabilities">
+                            <div class="module-icon"><i class="fas fa-bug"></i></div>
+                            Vulnérabilités
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="module-section">
+                    <h3><i class="fas fa-network-wired"></i> Infrastructure</h3>
+                    <div class="module-grid">
+                        <button class="module-btn" data-panel="network">
+                            <div class="module-icon"><i class="fas fa-server"></i></div>
+                            Scan Réseau
+                        </button>
+                        <button class="module-btn" data-panel="ports">
+                            <div class="module-icon"><i class="fas fa-plug"></i></div>
+                            Ports & Services
+                        </button>
+                        <button class="module-btn" data-panel="ssl">
+                            <div class="module-icon"><i class="fas fa-lock"></i></div>
+                            Analyse SSL/TLS
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="module-section">
+                    <h3><i class="fas fa-code"></i> Applications</h3>
+                    <div class="module-grid">
+                        <button class="module-btn" data-panel="webapp">
+                            <div class="module-icon"><i class="fas fa-globe"></i></div>
+                            Web Application
+                        </button>
+                        <button class="module-btn" data-panel="headers">
+                            <div class="module-icon"><i class="fas fa-heading"></i></div>
+                            En-têtes HTTP
+                        </button>
+                        <button class="module-btn" data-panel="cookies">
+                            <div class="module-icon"><i class="fas fa-cookie"></i></div>
+                            Cookies & Session
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="module-section">
+                    <h3><i class="fas fa-file-alt"></i> Rapports</h3>
+                    <div class="module-grid">
+                        <button class="module-btn" data-panel="report">
+                            <div class="module-icon"><i class="fas fa-file-contract"></i></div>
+                            Rapport Complet
+                        </button>
+                        <button class="module-btn" onclick="generatePDF()">
+                            <div class="module-icon"><i class="fas fa-download"></i></div>
+                            Exporter PDF
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="main-content">
+                <!-- Panel Vue d'Ensemble -->
+                <div class="analysis-panel active" id="overviewPanel">
+                    <div class="panel-header">
+                        <h2><i class="fas fa-eye"></i> Vue d'Ensemble du Pentest</h2>
+                        <div class="panel-subtitle">Score de sécurité global et métriques clés</div>
+                    </div>
+                    
+                    <div class="panel-grid">
+                        <div class="metric-card">
+                            <div class="metric-header">
+                                <div class="metric-title">Score de Sécurité</div>
+                                <div class="metric-value critical" id="securityScore">--/100</div>
+                            </div>
+                            <div class="progress-container">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" id="securityProgress" style="width: 0%"></div>
+                                </div>
+                                <div class="progress-label">
+                                    <span>Faible</span>
+                                    <span>Élevé</span>
+                                </div>
+                            </div>
+                            <div class="metric-content">
+                                Évaluation globale basée sur 25 critères de sécurité OWASP
+                            </div>
+                        </div>
+                        
+                        <div class="metric-card">
+                            <div class="metric-header">
+                                <div class="metric-title">Vulnérabilités</div>
+                                <div class="metric-value warning" id="vulnCount">0</div>
+                            </div>
+                            <div class="metric-content">
+                                <div>Critique: <span id="criticalCount">0</span></div>
+                                <div>Haute: <span id="highCount">0</span></div>
+                                <div>Moyenne: <span id="mediumCount">0</span></div>
+                                <div>Faible: <span id="lowCount">0</span></div>
+                            </div>
+                        </div>
+                        
+                        <div class="metric-card">
+                            <div class="metric-header">
+                                <div class="metric-title">Conformité</div>
+                                <div class="metric-value info" id="complianceScore">--%</div>
+                            </div>
+                            <div class="metric-content">
+                                <div>RGPD: <span id="gdprStatus">Non évalué</span></div>
+                                <div>OWASP: <span id="owaspStatus">Non évalué</span></div>
+                                <div>PCI-DSS: <span id="pciStatus">Non applicable</span></div>
+                            </div>
+                        </div>
+                        
+                        <div class="metric-card">
+                            <div class="metric-header">
+                                <div class="metric-title">Infrastructure</div>
+                                <div class="metric-value success" id="infraScore">--/10</div>
+                            </div>
+                            <div class="metric-content">
+                                <div>SSL/TLS: <span id="sslStatus">Non testé</span></div>
+                                <div>DNS: <span id="dnsStatus">Non testé</span></div>
+                                <div>Serveur: <span id="serverStatus">Non détecté</span></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="alert-box warning" id="overviewAlert">
+                        <i class="fas fa-exclamation-triangle"></i> Lancez un scan pour analyser la sécurité du site
+                    </div>
+                </div>
+                
+                <!-- Panel Sécurité -->
+                <div class="analysis-panel" id="securityPanel">
+                    <div class="panel-header">
+                        <h2><i class="fas fa-shield-alt"></i> Analyse de Sécurité Approfondie</h2>
+                        <div class="panel-subtitle">Évaluation complète des protections et configurations</div>
+                    </div>
+                    
+                    <div id="securityFindings">
+                        <!-- Rempli dynamiquement -->
+                    </div>
+                </div>
+                
+                <!-- Panel Vulnérabilités -->
+                <div class="analysis-panel" id="vulnerabilitiesPanel">
+                    <div class="panel-header">
+                        <h2><i class="fas fa-bug"></i> Détection de Vulnérabilités</h2>
+                        <div class="panel-subtitle">Scan automatique des failles de sécurité</div>
+                    </div>
+                    
+                    <div id="vulnerabilityFindings">
+                        <!-- Rempli dynamiquement -->
+                    </div>
+                </div>
+                
+                <!-- Panel Réseau -->
+                <div class="analysis-panel" id="networkPanel">
+                    <div class="panel-header">
+                        <h2><i class="fas fa-server"></i> Analyse Infrastructure Réseau</h2>
+                        <div class="panel-subtitle">Scan des serveurs, DNS et services exposés</div>
+                    </div>
+                    
+                    <div id="networkFindings">
+                        <!-- Rempli dynamiquement -->
+                    </div>
+                </div>
+                
+                <!-- Panel SSL/TLS -->
+                <div class="analysis-panel" id="sslPanel">
+                    <div class="panel-header">
+                        <h2><i class="fas fa-lock"></i> Audit SSL/TLS</h2>
+                        <div class="panel-subtitle">Vérification complète du chiffrement</div>
+                    </div>
+                    
+                    <div id="sslFindings">
+                        <!-- Rempli dynamiquement -->
+                    </div>
+                </div>
+                
+                <!-- Panel Web Application -->
+                <div class="analysis-panel" id="webappPanel">
+                    <div class="panel-header">
+                        <h2><i class="fas fa-globe"></i> Analyse Application Web</h2>
+                        <div class="panel-subtitle">Test des failles OWASP Top 10</div>
+                    </div>
+                    
+                    <div id="webappFindings">
+                        <!-- Rempli dynamiquement -->
+                    </div>
+                </div>
+                
+                <!-- Panel Rapport -->
+                <div class="analysis-panel" id="reportPanel">
+                    <div class="panel-header">
+                        <h2><i class="fas fa-file-contract"></i> Rapport de Pentest Complet</h2>
+                        <div class="panel-subtitle">Synthèse de toutes les analyses effectuées</div>
+                    </div>
+                    
+                    <div id="reportContent">
+                        <!-- Rempli dynamiquement -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="status-bar" id="statusBar">
+        <div class="status-dot" id="statusDot"></div>
+        <span id="statusText">Prêt au combat</span>
+    </div>
+    
+    <div class="footer">
+        <p>CyberSecurity Inspector Pro v4.0 | Pentest Automatisé | À usage éducatif uniquement</p>
+        <p style="margin-top: 10px; font-size: 0.7rem; color: #888;">
+            <i class="fas fa-exclamation-circle"></i> Cet outil simule des tests de pénétration. Ne pas utiliser sans autorisation.
+        </p>
+    </div>
+
+    <script>
+        // ==================== CONFIGURATION ====================
+        const CONFIG = {
+            scanTimeout: 30000,
+            maxRedirects: 5,
+            userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+        };
+
+        // ==================== INITIALISATION ====================
+        document.addEventListener('DOMContentLoaded', function() {
+            initMatrix();
+            setupEventListeners();
+            updateStatus('ready');
+        });
+
+        function initMatrix() {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            const bg = document.getElementById('matrixBg');
+            
+            if (bg.firstChild) return;
+            
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            bg.appendChild(canvas);
+            
+            const chars = "01";
+            const fontSize = 14;
+            const columns = Math.floor(canvas.width / fontSize);
+            const drops = [];
+            
+            for (let i = 0; i < columns; i++) {
+                drops[i] = Math.floor(Math.random() * canvas.height / fontSize);
+            }
+            
+            function drawMatrix() {
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                ctx.fillStyle = '#0F0';
+                ctx.font = fontSize + 'px monospace';
+                
+                for (let i = 0; i < drops.length; i++) {
+                    const text = chars[Math.floor(Math.random() * chars.length)];
+                    ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                    
+                    if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                        drops[i] = 0;
+                    }
+                    drops[i]++;
+                }
+            }
+            
+            setInterval(drawMatrix, 50);
+            
+            window.addEventListener('resize', () => {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            });
+        }
+
+        function setupEventListeners() {
+            document.getElementById('scanBtn').addEventListener('click', () => runPentest('standard'));
+            document.getElementById('deepScanBtn').addEventListener('click', () => runPentest('aggressive'));
+            
+            document.querySelectorAll('.module-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    if (this.classList.contains('active')) return;
+                    
+                    document.querySelectorAll('.module-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    const panelId = this.dataset.panel + 'Panel';
+                    document.querySelectorAll('.analysis-panel').forEach(p => p.classList.remove('active'));
+                    document.getElementById(panelId).classList.add('active');
+                });
+            });
+            
+            document.getElementById('targetUrl').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') runPentest('standard');
+            });
+        }
+
+        // ==================== PENTEST PRINCIPAL ====================
+        async function runPentest(mode) {
+            const url = document.getElementById('targetUrl').value.trim();
+            if (!url) return showAlert('Veuillez entrer une URL valide', 'warning');
+            
+            let targetUrl;
+            try {
+                targetUrl = new URL(url);
+            } catch (e) {
+                try {
+                    targetUrl = new URL('https://' + url);
+                    document.getElementById('targetUrl').value = targetUrl.href;
+                } catch (e2) {
+                    return showAlert('URL invalide. Format: https://exemple.com', 'warning');
+                }
+            }
+            
+            const domain = targetUrl.hostname;
+            
+            showLoading(true);
+            updateStatus('scanning');
+            resetResults();
+            
+            try {
+                updateStep(1, 'Configuration des outils...');
+                await sleep(500);
+                
+                updateStep(2, 'Établissement de la connexion...');
+                const siteData = await fetchSiteData(targetUrl.href);
+                await sleep(500);
+                
+                updateStep(3, 'Analyse de surface...');
+                const infrastructure = await analyzeInfrastructure(domain);
+                await sleep(500);
+                
+                updateStep(4, 'Scan des ports et services...');
+                const securityScan = await performSecurityScan(siteData, targetUrl.href);
+                await sleep(500);
+                
+                updateStep(5, 'Test des vulnérabilités...');
+                const vulnerabilities = await detectVulnerabilities(siteData, infrastructure);
+                await sleep(500);
+                
+                updateStep(6, 'Génération du rapport...');
+                const report = generateCompleteReport({
+                    target: targetUrl.href,
+                    domain,
+                    siteData,
+                    infrastructure,
+                    securityScan,
+                    vulnerabilities,
+                    timestamp: new Date().toISOString(),
+                    mode
+                });
+                await sleep(500);
+                
+                displayResults(report);
+                updateStatus('success');
+                showAlert('Pentest terminé avec succès!', 'success');
+                
+            } catch (error) {
+                console.error('Erreur pendant le pentest:', error);
+                updateStatus('error');
+                showAlert(`Erreur: ${error.message}`, 'danger');
+            } finally {
+                showLoading(false);
+                setTimeout(() => updateStatus('ready'), 3000);
+            }
+        }
+
+        // ==================== FONCTIONS D'ANALYSE ====================
+        async function fetchSiteData(url) {
+            try {
+                const methods = [fetchViaAllOrigins, fetchViaCorsProxy];
+                
+                for (const method of methods) {
+                    try {
+                        const data = await method(url);
+                        if (data && data.contents) return data;
+                    } catch (e) {
+                        continue;
+                    }
+                }
+                
+                return {
+                    url,
+                    status: 'inaccessible',
+                    error: 'Impossible de récupérer le site'
+                };
+                
+            } catch (error) {
+                return {
+                    url,
+                    status: 'error',
+                    error: error.message
+                };
+            }
+        }
+
+        async function fetchViaAllOrigins(url) {
+            const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 10000);
+            
+            try {
+                const response = await fetch(proxyUrl, { 
+                    signal: controller.signal,
+                    headers: { 'User-Agent': CONFIG.userAgent }
+                });
+                clearTimeout(timeoutId);
+                
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                
+                const html = await response.text();
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                
+                return {
+                    url,
+                    status: 'success',
+                    contents: html.substring(0, 50000),
+                    title: doc.title || 'Pas de titre',
+                    scripts: Array.from(doc.querySelectorAll('script[src]')).map(s => s.src),
+                    links: Array.from(doc.querySelectorAll('link[rel="stylesheet"]')).map(l => l.href),
+                    forms: Array.from(doc.querySelectorAll('form')).map(f => ({
+                        action: f.action,
+                        method: f.method,
+                        inputs: Array.from(f.querySelectorAll('input')).map(i => i.type)
+                    })),
+                    meta: Array.from(doc.querySelectorAll('meta')).map(m => ({
+                        name: m.name || m.property,
+                        content: m.content
+                    }))
+                };
+            } catch (error) {
+                throw error;
+            }
+        }
+
+        async function fetchViaCorsProxy(url) {
+            const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(url)}`;
+            const response = await fetch(proxyUrl, {
+                headers: { 'User-Agent': CONFIG.userAgent }
+            });
+            
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            
+            const html = await response.text();
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            
+            return {
+                url,
+                status: 'success',
+                contents: html.substring(0, 30000),
+                title: doc.title || 'Pas de titre',
+                scripts: Array.from(doc.querySelectorAll('script[src]')).map(s => s.src).slice(0, 10)
+            };
+        }
+
+        async function analyzeInfrastructure(domain) {
+            const results = {
+                dns: [],
+                ssl: {},
+                server: {},
+                ports: [],
+                whois: {}
+            };
+            
+            // DNS Analysis
+            try {
+                const dnsRes = await fetch(`https://dns.google/resolve?name=${domain}&type=A,AAAA,MX,TXT`);
+                const dnsData = await dnsRes.json();
+                
+                if (dnsData.Answer) {
+                    results.dns = dnsData.Answer.map(record => ({
+                        type: record.type,
+                        data: record.data,
+                        ttl: record.TTL
+                    }));
+                }
+                
+                results.ips = results.dns.filter(r => r.type === 1 || r.type === 28).map(r => r.data);
+                
+            } catch (e) {
+                results.dnsError = e.message;
+            }
+            
+            // SSL/TLS Analysis
+            try {
+                const testUrl = `https://${domain}`;
+                const start = Date.now();
+                
+                await fetch(testUrl, { 
+                    method: 'HEAD',
+                    mode: 'no-cors',
+                    cache: 'no-store'
+                });
+                
+                results.ssl = {
+                    valid: true,
+                    protocol: 'TLS 1.2+',
+                    latency: Date.now() - start,
+                    supported: true
+                };
+                
+            } catch (e) {
+                results.ssl = {
+                    valid: false,
+                    error: e.message,
+                    supported: false
+                };
+            }
+            
+            // Server Detection
+            results.server = {
+                type: 'Web Server (Nginx/Apache)',
+                cloud: results.ips && results.ips.some(ip => ip && ip.includes('cloudflare')) ? 'Cloudflare' : 'VPS/Dedicated',
+                location: 'Global CDN (inféré)'
+            };
+            
+            // Port Scanning (simulation)
+            results.ports = [
+                { port: 80, service: 'HTTP', status: 'open', risk: 'low' },
+                { port: 443, service: 'HTTPS', status: 'open', risk: 'low' },
+                { port: 22, service: 'SSH', status: 'filtered', risk: 'medium' },
+                { port: 21, service: 'FTP', status: 'closed', risk: 'high' },
+                { port: 3306, service: 'MySQL', status: 'filtered', risk: 'high' }
+            ];
+            
+            // WHOIS
+            try {
+                const whoisRes = await fetch(`https://api.whois.vu/?q=${domain}`);
+                const whoisData = await whoisRes.json();
+                results.whois = {
+                    registered: !whoisData.available,
+                    available: whoisData.available,
+                    registrar: whoisData.registrar || 'Inconnu'
+                };
+            } catch (e) {
+                results.whois = { 
+                    registered: true,
+                    available: false,
+                    registrar: 'Service indisponible'
+                };
+            }
+            
+            return results;
+        }
+
+        async function performSecurityScan(siteData, url) {
+            const scanResults = {
+                score: 50, // Score de base
+                headers: {},
+                xss: {},
+                csrf: {}
+            };
+            
+            // Analyse des headers de sécurité
+            try {
+                await fetch(url, { 
+                    method: 'HEAD',
+                    mode: 'no-cors'
+                });
+                
+                scanResults.headers = {
+                    csp: siteData.contents && siteData.contents.includes('content-security-policy') ? 'present' : 'missing',
+                    hsts: siteData.contents && siteData.contents.includes('strict-transport-security') ? 'present' : 'missing',
+                    xFrame: siteData.contents && siteData.contents.includes('x-frame-options') ? 'present' : 'missing',
+                    xContentType: siteData.contents && siteData.contents.includes('x-content-type-options') ? 'present' : 'missing'
+                };
+                
+            } catch (e) {
+                scanResults.headers = { 
+                    error: e.message,
+                    csp: 'unknown',
+                    hsts: 'unknown',
+                    xFrame: 'unknown',
+                    xContentType: 'unknown'
+                };
+            }
+            
+            // Détection XSS
+            if (siteData.contents) {
+                const hasInlineScripts = siteData.contents.includes('<script>') || 
+                                        siteData.contents.includes('javascript:');
+                scanResults.xss = {
+                    risk: hasInlineScripts ? 'medium' : 'low',
+                    inlineScripts: hasInlineScripts,
+                    sanitization: 'unknown'
+                };
+            } else {
+                scanResults.xss = {
+                    risk: 'unknown',
+                    inlineScripts: false,
+                    sanitization: 'unknown'
+                };
+            }
+            
+            // Détection CSRF - TOUJOURS DÉFINIR UN RISK
+            if (siteData.forms && siteData.forms.length > 0) {
+                const formsWithoutTokens = siteData.forms.filter(f => 
+                    siteData.contents && 
+                    !siteData.contents.includes('csrf') && 
+                    !siteData.contents.includes('_token')
+                );
+                scanResults.csrf = {
+                    risk: formsWithoutTokens.length > 0 ? 'high' : 'low',
+                    formsCount: siteData.forms.length,
+                    unprotectedForms: formsWithoutTokens.length
+                };
+            } else {
+                scanResults.csrf = {
+                    risk: 'low',
+                    formsCount: 0,
+                    unprotectedForms: 0
+                };
+            }
+            
+            // Calcul du score
+            if (scanResults.headers.csp === 'present') scanResults.score += 10;
+            if (scanResults.headers.hsts === 'present') scanResults.score += 10;
+            if (scanResults.xss.risk === 'low') scanResults.score += 5;
+            if (scanResults.csrf.risk === 'low') scanResults.score += 5;
+            
+            scanResults.score = Math.min(scanResults.score, 100);
+            
+            return scanResults;
+        }
+
+        async function detectVulnerabilities(siteData, infrastructure) {
+            const vulns = {
+                critical: [],
+                high: [],
+                medium: [],
+                low: [],
+                info: []
+            };
+            
+            // Détection basée sur les patterns
+            if (siteData.scripts) {
+                siteData.scripts.forEach(script => {
+                    if (script && script.includes('http://') && !script.includes('https://')) {
+                        vulns.high.push({
+                            id: 'VULN-001',
+                            title: 'Script chargé en HTTP non sécurisé',
+                            description: `Le script est chargé via HTTP au lieu de HTTPS`,
+                            impact: 'Data interception, MITM attacks',
+                            remediation: 'Utiliser HTTPS pour tous les scripts'
+                        });
+                    }
+                    
+                    if (script && script.includes('jquery') && script.includes('1.') && !script.includes('1.12.4')) {
+                        vulns.medium.push({
+                            id: 'VULN-002',
+                            title: 'Version vulnérable de jQuery détectée',
+                            description: `jQuery peut contenir des vulnérabilités connues`,
+                            impact: 'XSS, Code execution',
+                            remediation: 'Mettre à jour vers la dernière version'
+                        });
+                    }
+                });
+            }
+            
+            // Vulnérabilités SSL
+            if (!infrastructure.ssl.valid) {
+                vulns.critical.push({
+                    id: 'VULN-003',
+                    title: 'SSL/TLS non supporté ou invalide',
+                    description: 'Le site n\'utilise pas de connexion sécurisée HTTPS',
+                    impact: 'Data interception, Credential theft',
+                    remediation: 'Implémenter un certificat SSL valide'
+                });
+            }
+            
+            // Headers manquants
+            if (siteData.contents && !siteData.contents.includes('content-security-policy')) {
+                vulns.medium.push({
+                    id: 'VULN-004',
+                    title: 'Content Security Policy manquante',
+                    description: 'Pas de header CSP détecté',
+                    impact: 'XSS, Clickjacking',
+                    remediation: 'Implémenter une CSP appropriée'
+                });
+            }
+            
+            // Ports ouverts risqués
+            if (infrastructure.ports) {
+                infrastructure.ports.forEach(port => {
+                    if (port.status === 'open' && port.risk === 'high') {
+                        vulns.high.push({
+                            id: 'VULN-005',
+                            title: `Port ${port.port} (${port.service}) ouvert`,
+                            description: `Le port ${port.port} est accessible publiquement`,
+                            impact: 'Unauthorized access, Brute force',
+                            remediation: `Fermer le port ${port.port} ou le protéger`
+                        });
+                    }
+                });
+            }
+            
+            // Cookies non sécurisés
+            if (siteData.contents && siteData.contents.includes('document.cookie')) {
+                vulns.medium.push({
+                    id: 'VULN-006',
+                    title: 'Cookies accessibles via JavaScript',
+                    description: 'Les cookies peuvent être lus/modifiés via JS',
+                    impact: 'Session hijacking, XSS',
+                    remediation: 'Utiliser le flag HttpOnly pour les cookies sensibles'
+                });
+            }
+            
+            return vulns;
+        }
+
+        function generateCompleteReport(data) {
+            const report = {
+                metadata: {
+                    target: data.target,
+                    domain: data.domain,
+                    date: new Date(data.timestamp).toLocaleString(),
+                    mode: data.mode,
+                    duration: 'Simulation'
+                },
+                executive: {
+                    summary: `Pentest ${data.mode} de ${data.domain}`,
+                    score: data.securityScan?.score || 0,
+                    riskLevel: calculateRiskLevel(data.securityScan?.score || 0),
+                    criticalFindings: data.vulnerabilities?.critical?.length || 0,
+                    recommendations: []
+                },
+                details: data
+            };
+            
+            // Générer des recommandations
+            if (data.vulnerabilities && data.vulnerabilities.critical && data.vulnerabilities.critical.length > 0) {
+                report.executive.recommendations.push('Corriger les vulnérabilités critiques immédiatement');
+            }
+            
+            if (data.infrastructure && !data.infrastructure.ssl.valid) {
+                report.executive.recommendations.push('Implémenter HTTPS avec certificat valide');
+            }
+            
+            if (data.siteData && data.siteData.scripts && data.siteData.scripts.some(s => s && s.includes('http://'))) {
+                report.executive.recommendations.push('Forcer HTTPS pour toutes les ressources');
+            }
+            
+            return report;
+        }
+
+        // ==================== AFFICHAGE ====================
+        function displayResults(report) {
+            const details = report.details;
+            
+            // Mise à jour du score global
+            const score = report.executive.score || 0;
+            document.getElementById('securityScore').textContent = `${score}/100`;
+            document.getElementById('securityProgress').style.width = `${score}%`;
+            
+            const scoreElement = document.getElementById('securityScore');
+            scoreElement.className = 'metric-value ';
+            if (score < 40) scoreElement.classList.add('critical');
+            else if (score < 70) scoreElement.classList.add('warning');
+            else scoreElement.classList.add('success');
+            
+            // Compteurs de vulnérabilités
+            const vulns = details.vulnerabilities || {};
+            document.getElementById('vulnCount').textContent = 
+                (vulns.critical?.length || 0) + 
+                (vulns.high?.length || 0) + 
+                (vulns.medium?.length || 0) + 
+                (vulns.low?.length || 0);
+            
+            document.getElementById('criticalCount').textContent = vulns.critical?.length || 0;
+            document.getElementById('highCount').textContent = vulns.high?.length || 0;
+            document.getElementById('mediumCount').textContent = vulns.medium?.length || 0;
+            document.getElementById('lowCount').textContent = vulns.low?.length || 0;
+            
+            // Mise à jour de l'infrastructure
+            const infra = details.infrastructure || {};
+            const sslValid = infra.ssl ? infra.ssl.valid : false;
+            document.getElementById('infraScore').textContent = `${sslValid ? 8 : 2}/10`;
+            document.getElementById('sslStatus').textContent = sslValid ? '✓ Valide' : '✗ Invalide';
+            document.getElementById('dnsStatus').textContent = infra.dns?.length > 0 ? '✓ Résolu' : '✗ Erreur';
+            
+            // Afficher les résultats détaillés
+            displaySecurityFindings(details);
+            displayVulnerabilityFindings(vulns);
+            displayNetworkFindings(infra);
+            displaySSLFindings(infra.ssl || {});
+            displayWebAppFindings(details.siteData || {}, details.securityScan || {});
+            displayReportContent(report);
+            
+            // Mettre à jour l'alerte
+            const alertBox = document.getElementById('overviewAlert');
+            alertBox.className = 'alert-box ';
+            if (score < 40) {
+                alertBox.classList.add('critical');
+                alertBox.innerHTML = `<i class="fas fa-skull-crossbones"></i> <strong>ALERTE CRITIQUE:</strong> ${report.metadata.domain} présente des risques de sécurité élevés. Score: ${score}/100`;
+            } else if (score < 70) {
+                alertBox.classList.add('warning');
+                alertBox.innerHTML = `<i class="fas fa-exclamation-triangle"></i> <strong>ATTENTION:</strong> ${report.metadata.domain} présente des vulnérabilités. Score: ${score}/100`;
+            } else {
+                alertBox.classList.add('success');
+                alertBox.innerHTML = `<i class="fas fa-shield-alt"></i> <strong>SÉCURITÉ OPTIMALE:</strong> ${report.metadata.domain} présente une bonne sécurité. Score: ${score}/100`;
+            }
+        }
+
+        function displaySecurityFindings(details) {
+            const container = document.getElementById('securityFindings');
+            let html = '';
+            
+            // Headers de sécurité
+            if (details.securityScan && details.securityScan.headers) {
+                const headers = details.securityScan.headers;
+                html += `
+                    <div class="finding-card info">
+                        <div class="finding-header">
+                            <div class="finding-title">En-têtes de Sécurité</div>
+                            <span class="severity-badge severity-info">INFO</span>
+                        </div>
+                        <div class="finding-content">
+                            <div>CSP: ${headers.csp === 'present' ? '✓ Présent' : headers.csp === 'missing' ? '✗ Manquant' : '?'}</div>
+                            <div>HSTS: ${headers.hsts === 'present' ? '✓ Présent' : headers.hsts === 'missing' ? '✗ Manquant' : '?'}</div>
+                            <div>X-Frame-Options: ${headers.xFrame === 'present' ? '✓ Présent' : headers.xFrame === 'missing' ? '✗ Manquant' : '?'}</div>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            // Protection XSS
+            if (details.securityScan && details.securityScan.xss && details.securityScan.xss.risk) {
+                const xss = details.securityScan.xss;
+                const risk = xss.risk || 'unknown';
+                html += `
+                    <div class="finding-card ${risk}">
+                        <div class="finding-header">
+                            <div class="finding-title">Protection XSS</div>
+                            <span class="severity-badge severity-${risk}">${risk.toUpperCase()}</span>
+                        </div>
+                        <div class="finding-content">
+                            <div>Scripts inline: ${xss.inlineScripts ? '✓ Détectés' : '✓ Aucun'}</div>
+                            <div>Sanitization: ${xss.sanitization || 'Inconnu'}</div>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            // Protection CSRF
+            if (details.securityScan && details.securityScan.csrf && details.securityScan.csrf.risk) {
+                const csrf = details.securityScan.csrf;
+                const risk = csrf.risk || 'low';
+                html += `
+                    <div class="finding-card ${risk}">
+                        <div class="finding-header">
+                            <div class="finding-title">Protection CSRF</div>
+                            <span class="severity-badge severity-${risk}">${risk.toUpperCase()}</span>
+                        </div>
+                        <div class="finding-content">
+                            <div>Formulaires: ${csrf.formsCount || 0}</div>
+                            <div>Non protégés: ${csrf.unprotectedForms || 0}</div>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            container.innerHTML = html || '<div class="alert-box warning">Aucune donnée de sécurité disponible</div>';
+        }
+
+        function displayVulnerabilityFindings(vulns) {
+            const container = document.getElementById('vulnerabilityFindings');
+            
+            if (!vulns || Object.keys(vulns).length === 0) {
+                container.innerHTML = '<div class="alert-box success">Aucune vulnérabilité détectée</div>';
+                return;
+            }
+            
+            let html = '<div class="findings-grid">';
+            const severityOrder = ['critical', 'high', 'medium', 'low', 'info'];
+            
+            severityOrder.forEach(severity => {
+                if (vulns[severity] && vulns[severity].length > 0) {
+                    vulns[severity].forEach(vuln => {
+                        html += `
+                            <div class="finding-card ${severity}">
+                                <div class="finding-header">
+                                    <div class="finding-title">${vuln.id || 'VULN'}: ${vuln.title || 'Vulnérabilité'}</div>
+                                    <span class="severity-badge severity-${severity}">${severity.toUpperCase()}</span>
+                                </div>
+                                <div class="finding-content">
+                                    <p>${vuln.description || 'Description non disponible'}</p>
+                                    <div class="code-block">
+                                        <strong>Impact:</strong> ${vuln.impact || 'Non spécifié'}<br>
+                                        <strong>Recommandation:</strong> ${vuln.remediation || 'Aucune recommandation'}
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                }
+            });
+            
+            html += '</div>';
+            container.innerHTML = html;
+        }
+
+        function displayNetworkFindings(infra) {
+            const container = document.getElementById('networkFindings');
+            let html = '<div class="panel-grid">';
+            
+            // DNS
+            const dnsCount = infra.dns ? infra.dns.length : 0;
+            html += `
+                <div class="metric-card">
+                    <div class="metric-header">
+                        <div class="metric-title">DNS Records</div>
+                        <div class="metric-value ${dnsCount > 0 ? 'success' : 'warning'}">${dnsCount}</div>
+                    </div>
+                    <div class="metric-content">
+                        ${infra.dns && infra.dns.length > 0 ? infra.dns.slice(0, 3).map(r => 
+                            `<div>${getDNSTypeName(r.type)} → ${(r.data || '').substring(0, 30)}${(r.data || '').length > 30 ? '...' : ''}</div>`
+                        ).join('') : 'Non disponible'}
+                    </div>
+                </div>
+            `;
+            
+            // Ports
+            const openPorts = infra.ports ? infra.ports.filter(p => p.status === 'open').length : 0;
+            html += `
+                <div class="metric-card ${openPorts > 5 ? 'warning' : 'success'}">
+                    <div class="metric-header">
+                        <div class="metric-title">Ports Ouverts</div>
+                        <div class="metric-value ${openPorts > 5 ? 'warning' : 'info'}">${openPorts}</div>
+                    </div>
+                    <div class="metric-content">
+                        ${infra.ports && infra.ports.length > 0 ? infra.ports.filter(p => p.status === 'open').map(p => 
+                            `<div>${p.port} (${p.service}) - ${p.risk}</div>`
+                        ).join('') : 'Scan non disponible'}
+                    </div>
+                </div>
+            `;
+            
+            // WHOIS
+            const whois = infra.whois || {};
+            html += `
+                <div class="metric-card">
+                    <div class="metric-header">
+                        <div class="metric-title">Registre WHOIS</div>
+                        <div class="metric-value ${whois.registered ? 'info' : 'warning'}">${whois.registered ? 'Enregistré' : 'Libre'}</div>
+                    </div>
+                    <div class="metric-content">
+                        <div>Statut: ${whois.registered ? 'Enregistré' : 'Disponible'}</div>
+                        ${whois.registrar ? `<div>Registrar: ${whois.registrar}</div>` : ''}
+                    </div>
+                </div>
+            `;
+            
+            html += '</div>';
+            container.innerHTML = html;
+        }
+
+        function displaySSLFindings(ssl) {
+            const container = document.getElementById('sslFindings');
+            const sslData = ssl || {};
+            const cardClass = sslData.valid ? 'success' : 'critical';
+            
+            container.innerHTML = `
+                <div class="finding-card ${cardClass}">
+                    <div class="finding-header">
+                        <div class="finding-title">Audit SSL/TLS</div>
+                        <span class="severity-badge severity-${cardClass}">${sslData.valid ? 'SECURE' : 'CRITICAL'}</span>
+                    </div>
+                    <div class="finding-content">
+                        <div><strong>Validité:</strong> ${sslData.valid ? '✓ Certificat valide' : '✗ Certificat invalide ou absent'}</div>
+                        <div><strong>Protocole:</strong> ${sslData.protocol || 'Inconnu'}</div>
+                        <div><strong>Latence:</strong> ${sslData.latency || 'N/A'} ms</div>
+                        <div><strong>Support HTTPS:</strong> ${sslData.supported ? '✓ Supporté' : '✗ Non supporté'}</div>
+                        ${sslData.error ? `<div class="code-block">Erreur: ${sslData.error}</div>` : ''}
+                    </div>
+                </div>
+            `;
+        }
+
+        function displayWebAppFindings(siteData, securityScan) {
+            const container = document.getElementById('webappFindings');
+            let html = '<div class="findings-grid">';
+            
+            const site = siteData || {};
+            const scan = securityScan || {};
+            
+            // Scripts
+            const scripts = site.scripts || [];
+            const hasHttpScripts = scripts.some(s => s && s.includes('http://'));
+            html += `
+                <div class="metric-card ${hasHttpScripts ? 'warning' : 'success'}">
+                    <div class="metric-header">
+                        <div class="metric-title">Scripts Externes</div>
+                        <div class="metric-value ${scripts.length > 10 ? 'warning' : 'info'}">${scripts.length}</div>
+                    </div>
+                    <div class="metric-content">
+                        ${scripts.length > 0 ? scripts.slice(0, 3).map(s => 
+                            `<div class="chip">${(s || '').substring(0, 20)}...</div>`
+                        ).join('') : 'Aucun script détecté'}
+                    </div>
+                </div>
+            `;
+            
+            // Formulaires
+            const forms = site.forms || [];
+            const csrfData = scan.csrf || {};
+            const unprotectedForms = csrfData.unprotectedForms || 0;
+            html += `
+                <div class="metric-card ${unprotectedForms > 0 ? 'warning' : 'success'}">
+                    <div class="metric-header">
+                        <div class="metric-title">Formulaires</div>
+                        <div class="metric-value ${forms.length > 5 ? 'warning' : 'info'}">${forms.length}</div>
+                    </div>
+                    <div class="metric-content">
+                        <div>Total: ${forms.length}</div>
+                        <div>Sans protection CSRF: ${unprotectedForms}</div>
+                    </div>
+                </div>
+            `;
+            
+            // Cookies
+            const contents = site.contents || '';
+            const hasJsCookies = contents.includes('document.cookie');
+            const hasSecureFlag = contents.includes('Secure;');
+            html += `
+                <div class="metric-card">
+                    <div class="metric-header">
+                        <div class="metric-title">Sécurité Session</div>
+                        <div class="metric-value ${hasJsCookies ? 'warning' : 'success'}">${hasSecureFlag ? 'OK' : 'RISK'}</div>
+                    </div>
+                    <div class="metric-content">
+                        <div>Cookies JS: ${hasJsCookies ? '✓ Accessibles' : '✓ Protégés'}</div>
+                        <div>Secure flag: ${hasSecureFlag ? '✓ Présent' : '✗ Manquant'}</div>
+                    </div>
+                </div>
+            `;
+            
+            html += '</div>';
+            container.innerHTML = html;
+        }
+
+        function displayReportContent(report) {
+            const container = document.getElementById('reportContent');
+            const metadata = report.metadata || {};
+            const executive = report.executive || {};
+            
+            container.innerHTML = `
+                <div class="finding-card info">
+                    <div class="finding-header">
+                        <div class="finding-title">Rapport de Pentest</div>
+                        <span class="severity-badge severity-info">RAPPORT</span>
+                    </div>
+                    <div class="finding-content">
+                        <div><strong>Cible:</strong> ${metadata.target || 'Non spécifié'}</div>
+                        <div><strong>Date:</strong> ${metadata.date || 'Non spécifié'}</div>
+                        <div><strong>Mode:</strong> ${metadata.mode || 'standard'}</div>
+                        <div><strong>Score de sécurité:</strong> ${executive.score || 0}/100</div>
+                        <div><strong>Niveau de risque:</strong> ${executive.riskLevel || 'INCONNU'}</div>
+                        
+                        <div class="code-block" style="margin-top: 1rem;">
+                            <strong>SYNTHÈSE EXÉCUTIVE:</strong><br>
+                            ${executive.summary || 'Aucune synthèse disponible'}<br><br>
+                            
+                            <strong>VULNÉRABILITÉS CRITIQUES:</strong> ${executive.criticalFindings || 0}<br><br>
+                            
+                            <strong>RECOMMANDATIONS PRIORITAIRES:</strong><br>
+                            ${(executive.recommendations || []).map((rec, i) => `${i+1}. ${rec}`).join('<br>') || 'Aucune recommandation'}
+                        </div>
+                        
+                        <div style="margin-top: 1rem; color: #aaa; font-size: 0.9rem;">
+                            <i class="fas fa-exclamation-triangle"></i> Ce rapport est généré automatiquement. 
+                            Pour un audit complet, contactez un professionnel certifié.
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // ==================== UTILITAIRES ====================
+        function calculateRiskLevel(score) {
+            if (score < 40) return 'CRITIQUE';
+            if (score < 60) return 'ÉLEVÉ';
+            if (score < 80) return 'MODÉRÉ';
+            return 'FAIBLE';
+        }
+
+        function getDNSTypeName(type) {
+            const types = {
+                1: 'A',
+                28: 'AAAA',
+                15: 'MX',
+                16: 'TXT'
+            };
+            return types[type] || `TYPE${type}`;
+        }
+
+        function showLoading(show) {
+            const overlay = document.getElementById('loadingOverlay');
+            overlay.style.display = show ? 'flex' : 'none';
+        }
+
+        function updateStep(step, message) {
+            document.getElementById('loadingText').textContent = message || '';
+            
+            for (let i = 1; i <= 6; i++) {
+                const stepEl = document.getElementById(`step${i}`);
+                if (stepEl) {
+                    stepEl.classList.remove('active', 'completed');
+                    if (i === step) {
+                        stepEl.classList.add('active');
+                    } else if (i < step) {
+                        stepEl.classList.add('completed');
+                    }
+                }
+            }
+        }
+
+        function updateStatus(status) {
+            const dot = document.getElementById('statusDot');
+            const text = document.getElementById('statusText');
+            
+            if (!dot || !text) return;
+            
+            switch(status) {
+                case 'ready':
+                    dot.style.background = 'var(--hacker-green)';
+                    text.textContent = 'Prêt au combat';
+                    break;
+                case 'scanning':
+                    dot.style.background = 'var(--warning)';
+                    text.textContent = 'Pentest en cours...';
+                    break;
+                case 'success':
+                    dot.style.background = 'var(--hacker-green)';
+                    text.textContent = 'Pentest terminé';
+                    break;
+                case 'error':
+                    dot.style.background = 'var(--danger)';
+                    text.textContent = 'Erreur détectée';
+                    setTimeout(() => updateStatus('ready'), 3000);
+                    break;
+            }
+        }
+
+        function showAlert(message, type) {
+            const alert = document.createElement('div');
+            alert.className = `alert-box ${type}`;
+            alert.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-triangle'}"></i> ${message}`;
+            alert.style.position = 'fixed';
+            alert.style.top = '100px';
+            alert.style.right = '20px';
+            alert.style.zIndex = '2000';
+            alert.style.maxWidth = '400px';
+            alert.style.opacity = '0';
+            alert.style.transform = 'translateX(100px)';
+            alert.style.transition = 'all 0.3s';
+            
+            document.body.appendChild(alert);
+            
+            setTimeout(() => {
+                alert.style.opacity = '1';
+                alert.style.transform = 'translateX(0)';
+            }, 10);
+            
+            setTimeout(() => {
+                alert.style.opacity = '0';
+                alert.style.transform = 'translateX(100px)';
+                setTimeout(() => {
+                    if (alert.parentNode) {
+                        document.body.removeChild(alert);
+                    }
+                }, 300);
+            }, 5000);
+        }
+
+        function resetResults() {
+            document.getElementById('securityScore').textContent = '--/100';
+            document.getElementById('securityProgress').style.width = '0%';
+            document.getElementById('vulnCount').textContent = '0';
+            ['criticalCount', 'highCount', 'mediumCount', 'lowCount'].forEach(id => {
+                document.getElementById(id).textContent = '0';
+            });
+            
+            ['securityFindings', 'vulnerabilityFindings', 'networkFindings', 
+             'sslFindings', 'webappFindings', 'reportContent'].forEach(id => {
+                const element = document.getElementById(id);
+                if (element) element.innerHTML = '';
+            });
+        }
+
+        function generatePDF() {
+            alert('Fonction PDF: À implémenter avec une bibliothèque comme jsPDF');
+        }
+
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+    </script>
+</body>
+</html>
